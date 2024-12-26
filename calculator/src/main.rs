@@ -1,62 +1,20 @@
+mod modules;
+
+use modules::calculator::{Calculator, Operation};
+
 use std::io::{self, Write};
 use std::process;
 
-fn add(n1: i16, n2: i16) -> i16 {
-    n1 + n2
-}
+fn save_user_input() -> String {
+    let mut input = String::new();
 
-fn subtract(n1: i16, n2: i16) -> i16 {
-    n1 - n2
-}
+    io::stdout().flush().unwrap();
+    io::stdin().read_line(&mut input).unwrap();
 
-fn multiply(n1: i16, n2: i16) -> i16 {
-    n1 * n2
-}
-
-fn divide(n1: i16, n2: i16) -> i16 {
-    n1 / n2
-}
-
-#[derive(Debug)]
-struct Calculator {
-    operation: String,
-    /*Operator1 (i16),
-    Operator2 (i16),*/
-    result: i16
-}
-
-impl Calculator {
-    fn new(operation: String) -> Self {
-        Calculator {
-            operation,
-            result: 0
-        }
-    }
-
-    fn result(&mut self) {
-        match self.operation.as_str() {
-            "+" => {
-                self.result = add(1,2);
-            }
-            "-" => {
-                self.result = subtract(127,2);                        
-            }
-            "*" => {
-                self.result = multiply(9,3);
-            }
-            "/" => {
-                self.result = divide(8,2);
-            }
-            _ => {
-                println!("Wrong...");
-            }
-        }
-    }
+    input.trim().to_string() // trim returns a reference, so when the fn finish it's execution, the reference is going to point to something that will not exist anymore, that is why we need to_string()
 }
 
 fn main() {
-    let mut input = String::new();
-
     let string_input = r#"Please write the operation:
     - ADD (+)
     - SUBTRACT (-)
@@ -66,27 +24,34 @@ fn main() {
     - EXIT (e/E)
     "#;
 
-    println!("Operation selected: {}", string_input);
+    println!("{}",string_input);
 
-    io::stdout().flush().unwrap();
-    io::stdin().read_line(&mut input).unwrap();
-    
-    let operator = input.trim();
+    let operation = save_user_input();
+    println!("Operation selected: {}", operation);
 
     let mut calculator;
 
-    if operator == "+" {
-        calculator = Calculator::new(String::from("+"));
-    } else if operator == "-" {
-        calculator = Calculator::new(String::from("-"));
-    } else if operator == "*" {
-        calculator = Calculator::new(String::from("*"));
-    } else if operator == "/" {
-        calculator = Calculator::new(String::from("/"));
+    if operation == "+" {
+        calculator = Calculator::new(Operation::Add);
+    } else if operation == "-" {
+        calculator = Calculator::new(Operation::Subtract);
+    } else if operation == "*" {
+        calculator = Calculator::new(Operation::Multiply);
+    } else if operation == "/" {
+        calculator = Calculator::new(Operation::Divide);
     } else {
         println!("Finish execution without an operation.");
         process::exit(1);
     }
+
+    println!("Write the first operator");
+    let operator_input_1: f64 = save_user_input().parse().expect("Error");
+    
+    println!("Write the second operator");
+    let operator_input_2: f64 = save_user_input().parse().expect("Error");
+
+    calculator.set_operator_1(operator_input_1);
+    calculator.set_operator_2(operator_input_2);
 
     calculator.result();
 
