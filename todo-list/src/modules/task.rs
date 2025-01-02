@@ -39,12 +39,15 @@ impl Task {
         self.completed_at = Some(Utc::now());
     }
 
-    /*pub fn uncomplete(&mut self) {
-        self.is_completed = false;
-        self.completed_at = None;
-    }*/
-
     pub fn get_id(&self) -> Uuid {
         self.id
+    }
+
+    pub fn get_name(&self) -> String {
+        self.name.clone()
+    }
+
+    pub fn get_priority(&self) -> u8 {
+        self.priority
     }
 }
